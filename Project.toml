@@ -1,0 +1,4 @@
+name = "MCMC"
+uuid = "9b599511-0acd-47dc-8066-53df86f12503"
+authors = ["VinceNeede <v.bisogno3@studenti.unipi.it>"]
+version = "0.1.0"
