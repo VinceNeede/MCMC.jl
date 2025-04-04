@@ -2,3 +2,13 @@ name = "MCMC"
 uuid = "9b599511-0acd-47dc-8066-53df86f12503"
 authors = ["VinceNeede <v.bisogno3@studenti.unipi.it>"]
 version = "0.1.0"
+
+[deps]
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+LoggingExtras = "e6f89c97-d47a-5376-807f-9c37f3926c36"
+
+[compat]
+HDF5 = "0.17.2"
+Logging = "1.11.0"
+LoggingExtras = "1.1.0"
