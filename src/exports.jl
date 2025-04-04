@@ -11,4 +11,14 @@ export
 	observables,
 	should_save,
 	save!,
-	run!
+	run!,
+	# abstract_pimcmc.jl
+	AbstractPiMCMC,
+	state,
+	rng,
+	sample,
+	update!,
+	observables,
+	# pimcmc.jl
+	PiMCMC,
+	rng_state
