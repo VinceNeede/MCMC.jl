@@ -1,4 +1,4 @@
-using Documenter, MCMC
+using Documenter, MCMC, HDF5
 
 makedocs(
 	sitename="MCMC", 
