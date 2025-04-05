@@ -13,4 +13,4 @@ makedocs(
 	],
 	)
 
-	deploydocs(; repo="github.com/VinceNeede/MCMC.jl", devbranch="main", push_preview=true)
+	deploydocs(; repo="github.com/VinceNeede/MCMC.jl", devbranch="main", push_preview=true, checkdocs=:export)
