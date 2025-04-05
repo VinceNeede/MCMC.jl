@@ -7,8 +7,8 @@ makedocs(
         "Home" => "index.md",
         "Documentation" => [
             "Abstract MCMC" => "abstract_mcmc.md",
-            "Utilities" => "utils.md",
             "PiMCMC" => "pi_mcmc.md",
+            "Utilities" => "utils.md",
         ]
     ],
     checkdocs=:export,
