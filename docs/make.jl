@@ -8,7 +8,7 @@ makedocs(
 		"Documentation" => [
 			"Abstract MCMC" => "abstract_mcmc.md",
 			"Utilities" => "utils.md",
-			"PiMCMC" => pi_mcmc.md,
+			"PiMCMC" => "pi_mcmc.md",
 		]
 	],
 	)
