@@ -6,6 +6,9 @@ import LoggingExtras:
 import HDF5:
 	HDF5,
 	ishdf5, 
-	h5open
+	h5open,
+	create_group,
+	delete_object
+
 import Random:
 	Xoshiro
