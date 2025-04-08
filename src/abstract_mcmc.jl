@@ -56,8 +56,7 @@ should_save(mcmc::AbstractMCMC, ::Int) = false
 	save!(mcmc::AbstractMCMC, iter::Int)
 
 Save the MCMC state to the checkpoint HDF5 file calling `HDF5.write`. 
-A group with the name
-`objectid(current_task())` is created.
+A group with the name of `id(mcmc)`` is created.
 """
 function save!(mcmc::AbstractMCMC, iter::Int)
     file = checkpoint_file(mcmc)
