@@ -5,6 +5,7 @@ makedocs(
     modules=[MCMC],
     pages=[
         "Home" => "index.md",
+        "Example" => "example.md",
         "Documentation" => [
             "Abstract MCMC" => "abstract_mcmc.md",
             "PiMCMC" => "pi_mcmc.md",
