@@ -54,18 +54,22 @@ should_save(mcmc::AbstractMCMC, ::Int) = false
 """
 	save!(mcmc::AbstractMCMC, iter::Int)
 
-Save the MCMC state to the checkpoint HDF5 file calling `HDF5.write`.
+Save the MCMC state to the checkpoint HDF5 file calling `HDF5.write`. 
+A group with the name
+`objectid(current_task())` is created.
 """
 function save!(mcmc::AbstractMCMC, iter::Int)
-    filename = checkpoint_file(mcmc)
-    h5open(filename, "cw") do file
-        ishdf5(filename) || throw(ArgumentError("checkpoint_file must be a valid HDF5 file. $filename"))
-        # Save the MCMC state to the HDF5 file
-        key = "$(typeof(mcmc))" * "_state"
-        haskey(file, key) && delete_object(file, key)
-        HDF5.write(file, key, mcmc)
-        file[key]["iteration"] = iter
-    end
+    file = checkpoint_file(mcmc)
+    current_t = current_task()
+    id = objectid(current_t)
+    s_id = "$id"
+    haskey(file, s_id) && delete_object(file, s_id)
+    group = create_group(file, s_id)
+    # Save the MCMC state to the HDF5 file
+    key = "$(typeof(mcmc))" * "_state"
+    HDF5.write(group, key, mcmc)
+    group["iteration"] = iter
+    flush(file)
 end
 
 
@@ -75,7 +79,7 @@ end
 Run the MCMC algorithm for `n` iterations. It will sample a new point, update the configuration,
 compute the observables and save the state when `should_save` returns true.
 
-The keyword `every` can be used to set 
+The keyword `every` can be used to set the interval at which the observables are computed and saved.
 
 The steps are logged at debug level. For utility you can use the [`mcmc_logger`](@ref mcmc_logger) function to:
 ```julia
