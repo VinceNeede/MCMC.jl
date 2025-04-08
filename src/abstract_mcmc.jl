@@ -15,16 +15,17 @@ when the MCMC state should be saved. By default, the state will never be saved. 
 to save the state, the method `HDF5.write(::HDF5.File, ::String, <:AbstractMCMC)` must be defined.
 
 Furthermore the following symbols should be defined for the subtype either as fields or as methods:
-- `rng(<:AbstractMCMC)`: Return the random number generator to be used for sampling. 
-- `observables(<:AbstractMCMC)`: Return a list of observables to be computed, 
+- `id(<:AbstractMCMC)::UUID`: Return a unique identifier for the MCMC instance.
+- `rng(<:AbstractMCMC)::AbstractRNG`: Return the random number generator to be used for sampling. 
+- `observables(<:AbstractMCMC)::Vector{Function}`: Return a list of observables to be computed, 
 observables must be functions that take the mcmc as argument.
-- `save_file(<:AbstractMCMC)`: Return an IO stream where the the obervables output will be saved.
-- `checkpoint_file(<:AbstractMCMC)`: Return the opened HDF5 file to save the MCMC state. Alternatively, 
+- `save_file(<:AbstractMCMC):::IOStream`: Return an IO stream where the the obervables output will be saved.
+- `checkpoint_file(<:AbstractMCMC)::HDF5.File`: Return the opened HDF5 file to save the MCMC state. Alternatively, 
 a checkpoint_file field can be defined for the subtype.
 """
 abstract type AbstractMCMC end
 
-for fun in [:checkpoint_file, :save_file, :rng, :observables]
+for fun in [:id, :checkpoint_file, :save_file, :rng, :observables]
     @eval begin
         """
         	$($(fun))(mcmc::AbstractMCMC)
@@ -60,9 +61,8 @@ A group with the name
 """
 function save!(mcmc::AbstractMCMC, iter::Int)
     file = checkpoint_file(mcmc)
-    current_t = current_task()
-    id = objectid(current_t)
-    s_id = "$id"
+    id_ = id(mcmc)
+    s_id = "$id_"
     haskey(file, s_id) && delete_object(file, s_id)
     group = create_group(file, s_id)
     # Save the MCMC state to the HDF5 file
