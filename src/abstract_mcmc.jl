@@ -15,16 +15,17 @@ when the MCMC state should be saved. By default, the state will never be saved. 
 to save the state, the method `HDF5.write(::HDF5.File, ::String, <:AbstractMCMC)` must be defined.
 
 Furthermore the following symbols should be defined for the subtype either as fields or as methods:
-- `rng(<:AbstractMCMC)`: Return the random number generator to be used for sampling. 
-- `observables(<:AbstractMCMC)`: Return a list of observables to be computed, 
+- `id(<:AbstractMCMC)::UUID`: Return a unique identifier for the MCMC instance.
+- `rng(<:AbstractMCMC)::AbstractRNG`: Return the random number generator to be used for sampling. 
+- `observables(<:AbstractMCMC)::Vector{Function}`: Return a list of observables to be computed, 
 observables must be functions that take the mcmc as argument.
-- `save_file(<:AbstractMCMC)`: Return an IO stream where the the obervables output will be saved.
-- `checkpoint_file(<:AbstractMCMC)`: Return the filename to save the MCMC state. Alternatively, 
+- `save_file(<:AbstractMCMC):::IOStream`: Return an IO stream where the the obervables output will be saved.
+- `checkpoint_file(<:AbstractMCMC)::HDF5.File`: Return the opened HDF5 file to save the MCMC state. Alternatively, 
 a checkpoint_file field can be defined for the subtype.
 """
 abstract type AbstractMCMC end
 
-for fun in [:checkpoint_file, :save_file, :rng, :observables]
+for fun in [:id, :checkpoint_file, :save_file, :rng, :observables]
     @eval begin
         """
         	$($(fun))(mcmc::AbstractMCMC)
@@ -54,18 +55,20 @@ should_save(mcmc::AbstractMCMC, ::Int) = false
 """
 	save!(mcmc::AbstractMCMC, iter::Int)
 
-Save the MCMC state to the checkpoint HDF5 file calling `HDF5.write`.
+Save the MCMC state to the checkpoint HDF5 file calling `HDF5.write`. 
+A group with the name of `id(mcmc)`` is created.
 """
 function save!(mcmc::AbstractMCMC, iter::Int)
-    filename = checkpoint_file(mcmc)
-    h5open(filename, "cw") do file
-        ishdf5(filename) || throw(ArgumentError("checkpoint_file must be a valid HDF5 file. $filename"))
-        # Save the MCMC state to the HDF5 file
-        key = "$(typeof(mcmc))" * "_state"
-        haskey(file, key) && delete_object(file, key)
-        HDF5.write(file, key, mcmc)
-        file[key]["iteration"] = iter
-    end
+    file = checkpoint_file(mcmc)
+    id_ = id(mcmc)
+    s_id = "$id_"
+    haskey(file, s_id) && delete_object(file, s_id)
+    group = create_group(file, s_id)
+    # Save the MCMC state to the HDF5 file
+    key = "$(typeof(mcmc))" * "_state"
+    HDF5.write(group, key, mcmc)
+    group["iteration"] = iter
+    flush(file)
 end
 
 
@@ -75,7 +78,7 @@ end
 Run the MCMC algorithm for `n` iterations. It will sample a new point, update the configuration,
 compute the observables and save the state when `should_save` returns true.
 
-The keyword `every` can be used to set 
+The keyword `every` can be used to set the interval at which the observables are computed and saved.
 
 The steps are logged at debug level. For utility you can use the [`mcmc_logger`](@ref mcmc_logger) function to:
 ```julia

@@ -50,13 +50,13 @@ Returns the observables of the PiMCMC.
 observables(::AbstractPiMCMC) = [theta]
 
 """
-	HDF5.write(file::HDF5.File, group_name::String, mcmc::AbstractPiMCMC)
+	HDF5.write(parent::Union{HDF5.File, HDF5.Group}, group_name::String, mcmc::AbstractPiMCMC)
 
-Write the state of the MCMC to the HDF5 file. The concrete type must
+Write the state of the MCMC to the HDF5 parent. The concrete type must
 have implemented `rng_state` 
 """
-function HDF5.write(file::HDF5.File, group_name::String, mcmc::AbstractPiMCMC)
-    group = create_group(file, group_name)
+function HDF5.write(parent::Union{HDF5.File, HDF5.Group}, group_name::String, mcmc::AbstractPiMCMC)
+    group = create_group(parent, group_name)
     group["mcmc_state"] = mcmc.state
     group["rng"] = rng_state(mcmc)
     flush(group)

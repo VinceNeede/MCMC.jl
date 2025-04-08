@@ -5,6 +5,7 @@ export
 	mcmc_logger,
 	# abstract_mcmc.jl
 	AbstractMCMC,
+	id,
 	checkpoint_file,
 	save_file,
 	rng,
