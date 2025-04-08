@@ -19,7 +19,7 @@ Furthermore the following symbols should be defined for the subtype either as fi
 - `observables(<:AbstractMCMC)`: Return a list of observables to be computed, 
 observables must be functions that take the mcmc as argument.
 - `save_file(<:AbstractMCMC)`: Return an IO stream where the the obervables output will be saved.
-- `checkpoint_file(<:AbstractMCMC)`: Return the filename to save the MCMC state. Alternatively, 
+- `checkpoint_file(<:AbstractMCMC)`: Return the opened HDF5 file to save the MCMC state. Alternatively, 
 a checkpoint_file field can be defined for the subtype.
 """
 abstract type AbstractMCMC end
