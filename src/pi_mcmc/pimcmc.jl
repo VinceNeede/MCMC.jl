@@ -1,35 +1,41 @@
 """
-	PiMCMC <: AbstractPiMCMC <: AbstractMCMC
+	AbstractPiMCMC <: AbstractBaseMCMC{Vector{Float64}}
+	
+Alias for AbstractBaseMCMC{Vector{Float64}}. Used for algorithms that compute π.
+"""
+abstract type AbstractPiMCMC <: AbstractBaseMCMC{Vector{Float64}} end
+
+"""
+	sample(mcmc::AbstractPiMCMC)
+	
+Sample a new point in the [0, 1]×[0, 1] square.
+"""
+sample(mcmc::AbstractPiMCMC) = rand(rng(mcmc), 2)
+
+"""
+	update!(mcmc::AbstractPiMCMC, x_test::Vector{Float64})
+	
+Update the state of the MCMC with the new point, return always true.
+"""
+update!(mcmc::AbstractPiMCMC, x_test::Vector{Float64}) = (mcmc.state .= x_test; return true)
+
+"""
+	theta(mcmc::AbstractPiMCMC)
+	
+Function theta, it returns 1 if the point is inside the unit circle, 0 otherwise.
+"""
+theta(mcmc::AbstractPiMCMC) = state(mcmc)[1]^2 + state(mcmc)[2]^2 < 1. ? 1 : 0
+
+"""
+	observables(mcmc::AbstractPiMCMC)
+
+Returns the observables of the PiMCMC.
+"""
+observables(::AbstractPiMCMC) = [theta]
+
+"""
+	PiMCMC <: AbstractPiMCMC
 
 Concrete type for PiMCMC algorithms. 
-
-The rng is a Xoshiro, by default it is seeded with the default generator,
-which is seeded independently for each task.
-
-The checkpoint_file is defaulted using [`default_checkpoint_file`](@ref default_checkpoint_file).
-
-The save_file is defaulted using [`default_save_file`](@ref default_save_file).
-
-The closing of the file is automatically handled by the finalizer.
-
-The `rng_state` method is implemented for the type, but not the `should_save`.
 """
-Base.@kwdef mutable struct PiMCMC <: AbstractPiMCMC
-    id::UUID = uuid4()
-    rng::Xoshiro = Xoshiro([rand(UInt64) for _ in 1:5]...)
-    state::Vector{Float64}
-    checkpoint_file::HDF5.File = default_checkpoint_file(id)
-    save_file::IO = default_save_file(id)
-    function PiMCMC(id::UUID, rng::Xoshiro, state::Vector{Float64}, checkpoint_file::HDF5.File, save_file::IO)
-        x = new(id, rng, state, checkpoint_file, save_file)
-        f(t) = (@async println("Finalizing $(typeof(t))."); close(save_file))
-        finalizer(f, x)
-    end
-end
-
-"""
-	rng_state(mcmc::PiMCMC)
-
-Returns the state of the `Xoshiro` rng as a vector.
-"""
-rng_state(mcmc::PiMCMC) = [mcmc.rng.s0, mcmc.rng.s1, mcmc.rng.s2, mcmc.rng.s3, mcmc.rng.s4]
+@BaseMCMC_def Vector{Float64} struct PiMCMC <: AbstractPiMCMC end
