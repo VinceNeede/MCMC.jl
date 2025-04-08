@@ -10,14 +10,15 @@ default_save_file() = (filename = tempname() * ".csv"; @info "saving output in t
 
 utility function to create a temporary file for saving the checkpoint of the MCMC run.
 """
-default_checkpoint_file() = (filename = tempname() * ".h5"; @info "saving checkpoint in temp file" filename; filename)
+default_checkpoint_file() = (filename = tempname() * ".h5"; @info "saving checkpoint in temp file" filename; h5open(filename, "w"))
 
 """
 	mcmc_logger(every::Int=100; all::Bool=false)
 
 utility function to create a temporary file for saving the logs of the MCMC run.
 The logs are printed every `every` iterations. With `all==false` only the final 
-log with the conclusion of the run is printed.
+log with the conclusion of the run is printed. The filter is applied only to the
+logs of the MCMC module.
 """
 function mcmc_logger(every::Int=100; all::Bool=false)
     filename = tempname() * ".log"
