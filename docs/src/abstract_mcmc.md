@@ -6,6 +6,7 @@ AbstractMCMC
 ```
 ## Methods
 ```@docs
+id
 checkpoint_file
 save_file
 rng
