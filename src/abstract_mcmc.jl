@@ -92,12 +92,15 @@ function run!(mcmc::AbstractMCMC, n::Int; every::Int=1)
     out_io = save_file(mcmc)::IOStream
     try
         for i in 1:n
-            @debug "sampling new point" _id = :MCMC_run_sample_step iteration = i
-            x_test = sample(mcmc)
-
-            @debug "updating configuration" _id = :MCMC_run_update_config iteration = i
-            update!(mcmc, x_test) && (accepted += 1)
-
+            updated = let 
+                @debug "sampling new point" _id = :MCMC_run_sample_step iteration = i
+                x_test = sample(mcmc)
+    
+                @debug "updating configuration" _id = :MCMC_run_update_config iteration = i
+                update!(mcmc, x_test)                    
+            end
+            updated && (accepted += 1)
+        
             if should_save(mcmc, i)
                 @debug "saving configuration" _id = :MCMC_run_save_config iteration = i
                 save!(mcmc, i)
