@@ -14,12 +14,6 @@ Returns the state of the MCMC as a field.
 """
 state(mcmc::AbstractPiMCMC) = mcmc.state
 
-"""
-	rng(mcmc::AbstractPiMCMC)
-
-Returns the random number generator of the MCMC as a field.
-"""
-rng(mcmc::AbstractPiMCMC) = mcmc.rng
 
 """
 	sample(mcmc::AbstractPiMCMC)
