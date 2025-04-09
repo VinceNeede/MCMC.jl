@@ -11,6 +11,7 @@ makedocs(
         ],
         "Documentation" => [
             "Abstract MCMC" => "abstract_mcmc.md",
+            "BaseMCMC" => "base_mcmc.md",
             "PiMCMC" => "pi_mcmc.md",
             "Utilities" => "utils.md",
         ]
