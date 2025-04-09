@@ -13,13 +13,13 @@ export
 	should_save,
 	save!,
 	run!,
-	# abstract_pimcmc.jl
-	AbstractPiMCMC,
+	# base_mcmc.jl
+	AbstractBaseMCMC,
 	state,
-	rng,
-	sample,
-	update!,
-	observables,
+	rng_state,
+	@BaseMCMC_def,
 	# pimcmc.jl
+	AbstractPiMCMC,
 	PiMCMC,
-	rng_state
+	sample,
+	update!
