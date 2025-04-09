@@ -62,7 +62,7 @@ macro BaseMCMC_def(T, expr)
         save_file::IO
     end
     expr.args[3] = Expr(:block, new_block.args..., old_block.args...)
-    return expr
+    return esc(expr)
 end
 
 """
