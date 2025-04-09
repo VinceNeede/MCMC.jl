@@ -1,7 +1,7 @@
 # Create a Custom MCMC
 MCMC tries to be as general as possible, making extensive use of `julia` subtyping. However, this also means that it is often necessary to implement a new concrete type for the MCMC we want to perform.
 
-This example aims to walk through the implementation of `PiMCMC` to understand how a concrete `MCMC` type should be created. The only difference is that `PiMCMC` actually relies on the abstract type `AbstractPiMCMC <: AbstractMCMC`, while here we will implement the concrete type directly for simplicity.
+This example aims to walk through the implementation of `PiMCMC` to understand how a concrete `MCMC` type should be created. The only difference is that `PiMCMC` actually relies on the `AbstractBaseMCMC` structure and uses the [`@BaseMCMC_def`](@ref) macro, while here we will implement the concrete type directly for simplicity.
 
 ## Define the Type
 All the `AbstractMCMC` subtypes must have `id`, `rng`, `save_file`, `checkpoint_file` defined as either fields or methods. In the case of `PiMCMC` these are defined as fields. We also need a field to store the state of chain, in this case the 2D point in the $[0, 1]\times[0, 1]$ square. We are going to use the `Base.@kwdef` macro to directly create a constructor with keyword and default values. The `rng` we are going to use it the `Xoshiro` which will be seeded at the moment of creation from the default generator (which is task indipendent, so also the rng generated from it is going to be so).
