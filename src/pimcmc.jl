@@ -1,7 +1,7 @@
 """
 	AbstractPiMCMC <: AbstractBaseMCMC{Vector{Float64}}
 	
-Alias for AbstractBaseMCMC{Vector{Float64}}. Used for algorithms that compute π.
+Alias for `AbstractBaseMCMC{Vector{Float64}}`. Used for algorithms that compute π.
 """
 abstract type AbstractPiMCMC <: AbstractBaseMCMC{Vector{Float64}} end
 
