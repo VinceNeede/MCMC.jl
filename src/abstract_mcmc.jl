@@ -92,19 +92,19 @@ function run!(mcmc::AbstractMCMC, n::Int; every::Int=1)
     out_io = save_file(mcmc)::IOStream
     try
         for i in 1:n
-            updated = let 
+            updated = let
                 @debug "sampling new point" _id = :MCMC_run_sample_step iteration = i
                 x_test = sample(mcmc)
-    
+
                 @debug "updating configuration" _id = :MCMC_run_update_config iteration = i
-                update!(mcmc, x_test)                    
+                update!(mcmc, x_test)
             end
             if updated isa Bool
-                updated isa Bool && @warn "update! now must return an integer to compute the acceptance rate" maxlog=1
+                updated isa Bool && @warn "update! now must return an integer to compute the acceptance rate" maxlog = 1
                 updated = updated ? 1 : 0
             end
             accepted += updated
-        
+
             if should_save(mcmc, i)
                 @debug "saving configuration" _id = :MCMC_run_save_config iteration = i
                 save!(mcmc, i)
@@ -113,7 +113,7 @@ function run!(mcmc::AbstractMCMC, n::Int; every::Int=1)
             if i % every == 0
                 @debug "computing observables" _id = :MCMC_run_observable iteration = i
                 result = [obs(mcmc) for obs in observables(mcmc)]
-                println(out_io, join(result, ", "))
+                write(out_io, join(result, ", "), "\n")
             end
 
             @debug "Iteration $i completed" acceptance = accepted / i _id = :MCMC_run_iteration iteration = i
