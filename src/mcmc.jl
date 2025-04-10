@@ -35,9 +35,12 @@ function mcmc_logger(every::Int=100; all::Bool=false, filename::String=tempname(
         end
         return false
     end
-    return EarlyFilteredLogger(filter,
-        ActiveFilteredLogger(log -> log._module ≠ MCMC || log.kwargs[:iteration] % every == 0,
-            FileLogger(filename))
+    return TeeLogger(
+        current_logger(),
+        EarlyFilteredLogger(filter,
+            ActiveFilteredLogger(log -> log._module ≠ MCMC || log.kwargs[:iteration] % every == 0,
+                FileLogger(filename))
+        )
     )
 end
 mcmc_logger(id::UUID, every::Int=100; all::Bool=false) = mcmc_logger(every; all=all, filename="$id.log")

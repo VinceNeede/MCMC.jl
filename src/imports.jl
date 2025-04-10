@@ -2,7 +2,8 @@ using Logging
 import LoggingExtras: 
 	FileLogger, 
 	EarlyFilteredLogger, 
-	ActiveFilteredLogger
+	ActiveFilteredLogger,
+	TeeLogger
 
 import HDF5:
 	HDF5,
