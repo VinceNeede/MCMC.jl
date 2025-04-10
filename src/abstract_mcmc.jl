@@ -99,7 +99,11 @@ function run!(mcmc::AbstractMCMC, n::Int; every::Int=1)
                 @debug "updating configuration" _id = :MCMC_run_update_config iteration = i
                 update!(mcmc, x_test)                    
             end
-            updated && (accepted += 1)
+            if updated isa Bool
+                updated isa Bool && @warn "update! now must return an integer to compute the acceptance rate" maxlog=1
+                updated = updated ? 1 : 0
+            end
+            accepted += updated
         
             if should_save(mcmc, i)
                 @debug "saving configuration" _id = :MCMC_run_save_config iteration = i
